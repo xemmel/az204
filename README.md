@@ -153,3 +153,23 @@ func new -n MyQueueTrigger -t QueueTrigger
 
 
 ```
+
+
+#### Get Blob Content from Private Container using Role Assignments
+
+1. Storage Account -> Private Container -> Blob (non accessable)
+2. Post Man -> Blob Url (GET) x-ms-version 2020-04-08
+3. Get Access Token:
+
+```powershell
+
+az account get-access-token --resource https://storage.azure.com/
+```
+
+4. Copy Access Token
+
+5. PostMan : HEADER Authorization: Bearer [token]
+6. Verify -> Not allowed error
+7. Storage -> Access Control -> New Role Assignment -> Yourself!! Storage Blob data reader
+8. Wait up to 6 min.
+9. Postman -> Verify get content
