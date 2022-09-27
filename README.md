@@ -84,3 +84,72 @@ namespace theisolatedfunctions
 
 ```
 
+
+### Queue Triggers
+
+1. Insert a *Storage Account* Connection-String in local.settings "AzureWebJobsStorage"
+2. New QueueTrigger
+
+```powershell
+func new -n MyQueueTrigger -t QueueTrigger
+
+```
+
+```csharp
+
+    public class MyQueueTrigger
+    {
+        private readonly ILogger _logger;
+
+        public MyQueueTrigger(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<MyQueueTrigger>();
+        }
+
+        [Function("MyQueueTrigger")]
+        [QueueOutput("onpremoutput", Connection = "ExternalStorage")]
+        public Family Run([QueueTrigger("onpreminput", Connection = "ExternalStorage")] string myQueueItem)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
+            Person person = new Person
+            {
+                Name = myQueueItem,
+                Age = 30
+            };
+            Person person2 = new Person
+            {
+                Name = myQueueItem,
+                Age = 50
+            };
+            var people = new Person[] { person, person2 };
+            var family = new Family {People = people};
+            return family;
+        }
+    }
+
+    public record Family
+    {
+        public ICollection<Person> People { get; set; }
+    }
+
+    public record Person
+    {
+        public string? Name { get; set; }
+        public int Age { get; set; }
+    }
+}
+
+```
+
+```json
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "...",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "ExternalStorage" : "...."
+    }
+}
+
+
+```
