@@ -339,3 +339,22 @@ Console.WriteLine(result.Content);
 
 18. Restart Function App and wait
 19. Verify that you now get the value from within the *Key Vault*
+
+
+
+### Arm
+
+1. Clone the repo to your local drive
+2. In the folder run the following (verify that your *azure cli* is connected "az account show")
+3. Change storage account names in parameter files
+
+```powershell
+
+$rgName = "rg-tekno-arm";
+
+az group create -n $rgName -l westeurope;
+
+az deployment group create --name thename --resource-group $rgName --template-file .\Templates\storageAccount.json --parameters .\Parameters\Test\storageAccount.json
+az deployment group create --name thename --resource-group $rgName --template-file .\Templates\storageAccount.json --parameters .\Parameters\Prod\storageAccount.json
+
+```
