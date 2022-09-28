@@ -175,7 +175,7 @@ az account get-access-token --resource https://storage.azure.com/
 9. Postman -> Verify get content
 
 
-### Access Storage Account in .NET using ManId/Client Secret
+### Access Storage Account in .NET using ManId/Client Secret (Password-less/key-less)
 
 1. In AAD (entra.microsoft.com)
 2. Create *App Registration*
@@ -294,4 +294,33 @@ Console.WriteLine(result.Content);
 
 11. ERROR!!!
 12. Storage account -> Blob Reader -> Virtual Machine Identity + App Registration Identity
+
+
+#### Access Key Vault
+
+1. Create new KeyVault
+2. Create a secret with a value
+3. Verify that you can access the secret
+4. Change Access Configuration -> RBAC
+5. Verify that you now cannot access the secret
+6. Added The *Key Vault Administrator* role to you on the Key Vault
+7. Wait and verify that you can access
+8. Find your HttpTrigger Function from the Function App
+9. In Postman verify that it still works
+10. Add this code:
+
+```csharp
+
+
+    string password = Environment.GetEnvironmentVariable("password");
+    string responseMessage = $"Hello from Function!!!! the password is {password}";
+
+            return new OkObjectResult(responseMessage);
+
+```
+
+11. Verify that the value is empty
+12. In Configuration insert password: somevalue
+13. Save and restart 
+14. Verify that you now get your hardcoded value
 
