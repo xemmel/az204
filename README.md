@@ -173,3 +173,66 @@ az account get-access-token --resource https://storage.azure.com/
 7. Storage -> Access Control -> New Role Assignment -> Yourself!! Storage Blob data reader
 8. Wait up to 6 min.
 9. Postman -> Verify get content
+
+
+### Access Storage Account in .NET using ManId/Client Secret
+
+1. In AAD (entra.microsoft.com)
+2. Create *App Registration*
+3. Secrets -> Create new Secret (Saved: Secret **VALUE** ) (ClientId, TenantId, Secret)
+
+
+4. Create Virtual Machine
+4. **Windows Server 2022 Datacenter - x64 Gen2**
+5. UserName / Password
+
+6. Login (Remote deskop) (Ip address) (UserName .\[username])
+7. Make VM System Managed Identity (Identity)
+8. Restart
+9. Powershell
+
+```powershell
+
+Clear-Host;
+
+$scope = "https://servicebus.azure.net/";
+$scope = "https://storage.azure.com/";
+
+## $scope = "api://integrationit.com/danskindustriapi";
+
+
+$url = "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=$scope";
+$token = $null;
+$token = Invoke-WebRequest -Method Get -Uri $url -Headers @{ "metadata" = "true" } | Select-Object -ExpandProperty Content | ConvertFrom-Json | Select-Object -ExpandProperty access_token;
+$token;
+$token | Set-Clipboard;
+
+```
+
+```powershell
+
+Clear-Host;
+$token = Get-Clipboard;
+$p = $token.Split('.');
+$parts = $p[1];
+if (($parts.Length % 4) -ne 0) {
+    if (($parts.Length % 4) -eq 1) {
+        $parts += "===";
+    }
+        if (($parts.Length % 4) -eq 2) {
+        $parts += "==";
+    }
+            if (($parts.Length % 4) -eq 3) {
+        $parts += "=";
+    }
+}
+
+
+
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($parts)) | ConvertFrom-Json | ConvertTo-Json;
+
+
+
+
+```
+
