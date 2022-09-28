@@ -236,3 +236,60 @@ if (($parts.Length % 4) -ne 0) {
 
 ```
 
+
+10. Make a new Console Application
+
+```powershell
+
+dotnet new console -o theconsole
+cd theconsole
+dotnet add package Azure.Identity
+
+```csharp
+
+// See https://aka.ms/new-console-template for more information
+using Azure.Core;
+
+
+Console.WriteLine("Hello, World!");
+
+//TokenCredential
+//var token = new Azure.Identity.ManagedIdentityCredential();
+bool man = false;
+TokenCredential token;
+if (man)
+{
+    token = new Azure.Identity.ManagedIdentityCredential();
+}
+else
+{
+    token = new Azure.Identity.ClientSecretCredential(
+        tenantId: "--",
+        clientId: "--",
+        clientSecret: "---");
+
+}
+
+ 
+//var tokenRequestContext = new TokenRequestContext(scopes: new string[] { "https://storage.azure.com/" });
+//var accessToken = await token.GetTokenAsync(requestContext: tokenRequestContext);
+//Console.WriteLine(accessToken.Token);
+
+
+BlobServiceClient serviceClient = new(serviceUri: new Uri("https://[storageAccountName].blob.core.windows.net"), credential: token);
+
+var containerClient = serviceClient.GetBlobContainerClient("FOLDERNAME");
+var blobClient = containerClient.GetBlobClient("BLOB_NAME");
+var content = await blobClient.DownloadContentAsync();
+var result = content.Value;
+Console.WriteLine(result.Content);
+
+
+
+
+
+```
+
+11. ERROR!!!
+12. Storage account -> Blob Reader -> Virtual Machine Identity + App Registration Identity
+
