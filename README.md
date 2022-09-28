@@ -324,3 +324,18 @@ Console.WriteLine(result.Content);
 13. Save and restart 
 14. Verify that you now get your hardcoded value
 
+
+
+15. Now replace the Configuration Value with
+
+```
+
+@Microsoft.KeyVault(VaultName=....;SecretName=...)
+
+```
+
+16. Make sure your Function App has a **System Managed Identity**
+17. Give the identity the appropriate permissions on the Key Vault *Key Vault Secrets User*
+
+18. Restart Function App and wait
+19. Verify that you now get the value from within the *Key Vault*
