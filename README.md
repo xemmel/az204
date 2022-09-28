@@ -358,3 +358,14 @@ az deployment group create --name thename --resource-group $rgName --template-fi
 az deployment group create --name thename --resource-group $rgName --template-file .\Templates\storageAccount.json --parameters .\Parameters\Prod\storageAccount.json
 
 ```
+
+
+### Publish Function App through CLI
+
+1. Create new Function App
+2. In the project folder
+
+```powershell
+func azure functionapp publish [function app name]
+
+```
