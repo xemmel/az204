@@ -244,6 +244,8 @@ if (($parts.Length % 4) -ne 0) {
 dotnet new console -o theconsole
 cd theconsole
 dotnet add package Azure.Identity
+dotnet add package Azure.Storage.Blobs
+
 
 ```csharp
 
