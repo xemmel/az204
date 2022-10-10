@@ -369,3 +369,121 @@ az deployment group create --name thename --resource-group $rgName --template-fi
 func azure functionapp publish [function app name]
 
 ```
+
+### Secure API
+
+#### Create project
+
+```powershell
+
+dotnet new webapi -o the204api
+
+```
+#### Test the App
+
+In the project folder
+
+```powershell
+
+dotnet run
+
+
+```
+
+In another powershell
+
+```powershell
+Invoke-WebRequest "https://localhost:7068/weatherforecast" |
+    Select-Object -ExpandProperty Content | 
+    ConvertFrom-Json | 
+    ConvertTo-Json -Depth 10;
+```
+
+
+#### Create an App Registration in AAD for the API
+
+Create App Reg. Fetch *TenantId* *ClientId*
+
+```powershell
+
+dotnet add package Microsoft.Identity.Web
+
+```
+
+appsettings.json
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "AzureAD" : {
+    "Instance": "https://login.microsoftonline.com/",
+    "ClientId" : "aaa",
+    "TenantId" : "bbb"
+  }
+}
+
+```
+
+```csharp
+using Microsoft.Identity.Web;
+
+builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration);
+
+...
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+```
+
+#### Call again and test (should still work)
+
+In controller
+```csharp
+
+[Authorize]
+[ApiController]
+[Route("[controller]")]
+
+```
+
+#### Call again -> 401
+
+#### Make token call (default audience)
+
+```powershell
+
+$token = az account get-access-token | ConvertFrom-Json | Select-Object -ExpandProperty accessToken;
+
+Invoke-WebRequest "https://localhost:7068/weatherforecast" -Headers @{ "Authorization" = "Bearer $token" } | Select-Object -ExpandProperty Content | ConvertFrom-Json | ConvertTo-Json -Depth 10;
+```
+
+#### Create webapi Audience
+
+##### App Registration (API)
+
+##### Expose an API
+
+> Application ID URI -> Set
+
+Copy the api uri and Save
+
+
+#### Create token with new Audience
+
+```powershell
+
+$audience = "api://5d23ab39-b2eb-4aa2-b7e1-53510f1d92e0";
+
+$token = az account get-access-token --resource $audience | ConvertFrom-Json | Select-Object -ExpandProperty accessToken;
+
+Invoke-WebRequest "https://localhost:7068/weatherforecast" -Headers @{ "Authorization" = "Bearer $token" } | Select-Object -ExpandProperty Content | ConvertFrom-Json | ConvertTo-Json -Depth 10;
+
+```
+
