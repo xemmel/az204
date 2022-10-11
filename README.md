@@ -487,3 +487,87 @@ Invoke-WebRequest "https://localhost:7068/weatherforecast" -Headers @{ "Authoriz
 
 ```
 
+### Kusto Queries
+
+```
+
+AppTraces
+| where OperationId == '56d55fa5d627b8a810f7ba54a29803a8'
+| order by TimeGenerated asc
+
+
+AppRequests
+| where TimeGenerated > ago(1h)
+| where Name == 'Calculate'
+| project TimeGenerated, Success, DurationMs, OperationId
+| order by TimeGenerated desc
+
+
+AppRequests
+| where TimeGenerated > ago(1h)
+| where Name == 'Calculate'
+| summarize count() by tostring(Success)
+| render piechart 
+
+
+
+``` 
+
+
+### DockerFile
+
+
+```
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build-env
+
+EXPOSE 80
+
+WORKDIR /app
+COPY ./theapp/*.csproj ./
+RUN dotnet restore
+
+COPY /theapp/* ./
+RUN dotnet publish -c release -o out
+
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+ENTRYPOINT ["dotnet", "thedockerapp.dll"]
+
+
+```
+
+
+### API Management
+
+
+```xml
+
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration" />
+            <issuers>
+                <issuer>https://sts.windows.net/551c586d-a82d-4526-b186-d061ceaa589e/</issuer>
+            </issuers>
+        </validate-jwt>
+
+
+
+
+        <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Unauthorized" require-expiration-time="true" require-scheme="Bearer" require-signed-tokens="true">
+            <openid-config url="https://login.microsoftonline.com/organizations/v2.0/.well-known/openid-configuration" />
+                     <issuers>
+                <issuer>https://sts.windows.net/551c586d-a82d-4526-b186-d061ceaa589e/</issuer>
+            </issuers>
+		<required-claims>
+		<claim name="aud">
+                <value>api://05389de2-92fc-4176-aa9b-1990e03a85a0</value>
+		</claim>
+            </required-claims>
+        </validate-jwt>
+
+
+
+```
