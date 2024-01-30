@@ -76,3 +76,58 @@ func new -n queuetrigger -t QueueTrigger
         }
 
 ```
+
+
+#### Two process Invoices
+
+```csharp
+
+public record Invoice
+{
+    public string InvoiceId { get; set; }
+    public int Qty { get; set; }
+}
+
+
+### Existing function
+
+```csharp
+
+        [Function(nameof(myqueuetrigger))]
+        [QueueOutput("middlequeue", Connection = "thestorageconnection")]
+        public async Task<Invoice> RunAsync([QueueTrigger("invoicequeue", Connection = "thestorageconnection")] QueueMessage message)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
+            string input = message.MessageText;
+            
+            return new Invoice
+            {
+                InvoiceId = input,
+                Qty = 42
+            };
+ 
+           
+        }
+
+
+```
+
+## New function
+
+        [Function(nameof(FinalInvoiceProcess))]
+        [QueueOutput("finalqueue", Connection = "thestorageconnection")]
+        public Invoice Run(
+            [QueueTrigger("middlequeue", Connection = "thestorageconnection")] 
+            Invoice invoice)
+        {
+            //_logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
+            invoice.Qty++;
+            return invoice;
+        }
+
+
+## New Function
+
+
+
+```
