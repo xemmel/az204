@@ -26,3 +26,36 @@ func new -n myfirsthttptrigger -t HttpTrigger
 func start
 
 ```
+
+
+#### Create Queue Trigger
+
+```powershell
+
+func new -n queuetrigger -t QueueTrigger
+
+```
+
+#### Set up Queue Trigger
+
+```csharp
+
+        [Function(nameof(myqueuetrigger))]
+        public void Run([QueueTrigger("invoicequeue", Connection = "thestorageconnection")] QueueMessage message)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
+        }
+
+```
+
+### local.settings.json
+
+```json
+
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+        "thestorageconnection" : "DefaultEndpointsProtocol=https;......"
+    }
+
+```
