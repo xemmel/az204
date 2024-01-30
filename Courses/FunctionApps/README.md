@@ -59,3 +59,20 @@ func new -n queuetrigger -t QueueTrigger
     }
 
 ```
+
+### Queue Trigger with Queue output
+
+```csharp
+
+        [Function(nameof(myqueuetrigger))]
+        [QueueOutput("middlequeue", Connection = "thestorageconnection")]
+        public async Task<string> RunAsync([QueueTrigger("invoicequeue", Connection = "thestorageconnection")] QueueMessage message)
+        {
+            _logger.LogInformation($"C# Queue trigger function processed: {message.MessageText}");
+            string input = message.MessageText;
+            string output = $"The message: {input} has been processed!";
+
+            return output;
+        }
+
+```
