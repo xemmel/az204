@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "code", "code", "{79CE0B42-C2C4-40B2-8916-7CED293AA1DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "the204api", "code\the204api\the204api.csproj", "{C62419FD-482F-4633-A9B0-3C305C1D4A35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C62419FD-482F-4633-A9B0-3C305C1D4A35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C62419FD-482F-4633-A9B0-3C305C1D4A35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C62419FD-482F-4633-A9B0-3C305C1D4A35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C62419FD-482F-4633-A9B0-3C305C1D4A35}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C62419FD-482F-4633-A9B0-3C305C1D4A35} = {79CE0B42-C2C4-40B2-8916-7CED293AA1DC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {386D5C99-2356-4A82-BF95-27D376820809}
+	EndGlobalSection
+EndGlobal
