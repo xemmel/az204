@@ -83,6 +83,24 @@ Get ClientId and TenantId
 
 ### Alter program
 
+
+appsettings.json
+
+```json
+
+"AllowedHosts": "*",  
+  "AzureAd": {
+    "Instance": "https://login.microsoftonline.com/",
+    "TenantId": "...",
+    "ClientId": "...",
+    "CallbackPath": "/signin-oidc"
+  }
+
+
+```
+
+Program.cs
+
 ```csharp
 
 
