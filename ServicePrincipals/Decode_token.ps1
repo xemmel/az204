@@ -2,7 +2,7 @@
 Clear-Host;
 
 ##$token = Read-Host('token');
-$token =Get-Clipboard;
+## $token = Get-Clipboard;
 
 function UnixDate()
 {

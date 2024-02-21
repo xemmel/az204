@@ -1,9 +1,14 @@
+param (
+    [string]$clientId,
+    [string]$clientSecret
+)
+
 Clear-Host;
 
 $tenantId = "551c586d-a82d-4526-b186-d061ceaa589e";
-$clientId = "....";
-$clientSecret = "....";
-$audience = "https://management.azure.com";
+$audience = "api://31b8231c-51cb-47c5-a4e9-d310fbfaa51e";
+##$audience = "https://storage.azure.com";
+
 
 $scope = "$($audience)/.default";
 
