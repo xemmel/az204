@@ -66,6 +66,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
+//Add [Authorize]
 app.MapGet("/weatherforecast",[Authorize] () =>
 
 ```
@@ -116,4 +117,3 @@ app.MapGet("/weatherforecast",[Authorize(Roles = "writer")] () =>
  use the new token and verify that you CANNOT execute the method
 
  now in the code change *writer* to *reader* and now you should be able to execute since you have the correct role
- 
