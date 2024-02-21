@@ -47,6 +47,7 @@ In Postman GET {url}/weatherforecast
 ```csharp
 
 //Add at top
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Web;
 
 
