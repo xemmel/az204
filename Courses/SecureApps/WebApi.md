@@ -78,6 +78,18 @@ dotnet run
 
 ```
 
+### appsettings.json
+
+```json
+
+  "AllowedHosts": "*",
+  "AzureAd" : {
+    "ClientId" : "....",
+    "TenantId" : "551c586d-a82d-4526-b186-d061ceaa589e",
+    "Instance": "https://login.microsoftonline.com/"
+  }
+```
+
 ## Call
 
 In postman call again this time you should get an error
