@@ -1,5 +1,14 @@
+```powershell
+
+Login-AzAccount
+
+Get-AzContext
+
+```
+
 
 ```powershell
+
 
 
 $rgName = "sdumlctemplate02-rg"
