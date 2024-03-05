@@ -4,6 +4,8 @@ Login-AzAccount
 
 Get-AzContext
 
+winget install Microsoft.bicep
+
 ```
 
 
