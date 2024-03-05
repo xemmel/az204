@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "12019215999496402383"
+    }
+  },
+  "parameters": {
+    "appName": {
+      "type": "string"
+    },
+    "env": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "swedencentral"
+    }
+  },
+  "variables": {
+    "storageAccountName": "[format('{0}{1}st', parameters('appName'), parameters('env'))]",
+    "serviceBusName": "[format('{0}{1}-seb', parameters('appName'), parameters('env'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-01-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2"
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2021-11-01",
+      "name": "[variables('serviceBusName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard",
+        "tier": "Standard"
+      }
+    }
+  ]
+}
