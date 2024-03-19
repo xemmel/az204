@@ -1,0 +1,26 @@
+trigger:
+  - master
+
+pool: 
+  vmImage: ubuntu-latest
+
+variables:
+  - group: AppTest
+
+steps:
+  - script: echo 'Hello build world'
+    displayName: 'tester'
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet publish'
+    inputs:
+      command: 'publish'
+      publishWebProjects: true
+      projects: 'theapi/*.csproj'
+      arguments: '-o $(System.DefaultWorkingDirectory)/publish'
+      zipAfterPublish: true
+  - task: AzureWebApp@1
+    displayName: Azure Web App Deploy
+    inputs:
+      azureSubscription: $(serviceConnectionVar)
+      appName: sdumorten
+      package: $(System.DefaultWorkingDirectory)/**/*.zip
