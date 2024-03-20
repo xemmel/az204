@@ -1,0 +1,45 @@
+trigger:
+  - master
+
+pool: 
+  vmImage: ubuntu-latest
+
+
+variables:
+  - name: webAppName
+    value: mlccontainer
+
+stages: 
+  - stage: stage1
+    displayName: 'The build stage'
+    jobs: 
+      - job: job1
+        displayName: 'The build job'
+        steps:
+          - task: Docker@2
+            displayName: BuildImage
+            inputs:
+              command: buildAndPush
+              containerRegistry: acrconnection
+              repository: thefinalsdudemo
+              dockerfile: ./thecontainerapi/Dockerfile
+              tags: |
+                $(Build.BuildNumber)
+
+          - task: AzureAppServiceSettings@1
+            displayName: Azure App Service Settings
+            inputs:
+              azureSubscription: thefederatedconnection
+              appName: $(webAppName)
+              generalSettings: |
+                [
+                  {
+                    "acrUseManagedIdentityCreds": true
+                  }
+                ]
+          - task: AzureWebAppContainer@1
+            displayName: 'UpdateWebAppContainerImage'
+            inputs:
+              azureSubscription: thefederatedconnection
+              appName: $(webAppName)
+              containers: "iitacr.azurecr.io/thefinalsdudemo:$(Build.BuildNumber)"

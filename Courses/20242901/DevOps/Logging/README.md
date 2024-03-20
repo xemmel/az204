@@ -72,3 +72,8 @@ AppTraces
 
 
 ```
+
+
+$"fdfd {number}"
+
+("ffff {numberEntered}",numberString)
