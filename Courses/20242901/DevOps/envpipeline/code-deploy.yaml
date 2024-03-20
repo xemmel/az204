@@ -1,0 +1,30 @@
+parameters:
+  - name: env
+    type: string
+  - name: webAppName
+    type: string
+  - name: serviceConnection
+    type: string
+
+stages:
+  - stage: ${{ parameters.env }}Release
+    displayName: 'Stage: ${{ parameters.env }}'
+    jobs: 
+      - deployment: ${{ parameters.env }}
+        displayName: Release to ${{ parameters.env }}
+        environment: ${{ parameters.env }}
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo ${{ parameters.env }}
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    artifactName: webapp
+                    targetPath: $(Pipeline.Workspace)/webapp
+                - task: AzureWebApp@1
+                  displayName: Azure Web App Deploy
+                  inputs:
+                    azureSubscription: ${{ parameters.serviceConnection }}
+                    appName: ${{ parameters.webAppName }}
+                    package: "$(Pipeline.Workspace)/webapp/*.zip"
