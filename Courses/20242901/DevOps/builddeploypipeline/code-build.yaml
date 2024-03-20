@@ -1,0 +1,47 @@
+trigger:
+  - master
+
+pool: 
+  vmImage: ubuntu-latest
+
+variables:
+  - group: AppTest
+
+
+stages: 
+  - stage: stage1
+    displayName: 'The build stage'
+    jobs: 
+      - job: job1
+        displayName: 'The build job'
+        steps:
+          - script: echo 'Hello build world'
+            displayName: 'tester'
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet publish'
+            inputs:
+              command: 'publish'
+              publishWebProjects: true
+              projects: 'theapi/*.csproj'
+              arguments: '-o $(Build.ArtifactStagingDirectory)/publish'
+              zipAfterPublish: true
+          - task: PublishPipelineArtifact@1
+            displayName: "Publish Web App to Pipeline"
+            inputs:
+              targetPath: "$(Build.ArtifactStagingDirectory)/publish"
+              artifact: webapp
+              publishLocation: "pipeline"
+  
+  - template: code-deploy.yaml
+    parameters:
+      env: 'test'
+      webAppName: 'sdumortentest'
+      serviceConnection: $(serviceConnectionVar)
+
+  - template: code-deploy.yaml
+    parameters:
+      env: 'prod'
+      webAppName: 'sdumorten'
+      serviceConnection: $(serviceConnectionVar)
+
+
