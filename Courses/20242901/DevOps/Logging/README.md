@@ -9,6 +9,7 @@
     - 6 (In-process)
 
   Monitoring
+    (new)
     choose your app insight
 
   Create
@@ -28,3 +29,46 @@ Function App Overview
 
 
 Postman check both
+
+
+### Queries
+
+```
+
+##View requests
+
+AppRequests
+| where TimeGenerated > ago(1h)
+| project TimeGenerated, Name,Success, DurationMs, OperationId
+| order by TimeGenerated desc
+
+### Success by piechart
+
+AppRequests
+| where TimeGenerated > ago(1h)
+| summarize count() by tostring(Success)
+| render piechart  
+
+### Timeline
+
+AppRequests
+| where TimeGenerated > ago(1h)
+| summarize count() by bin(TimeGenerated,3m), tostring(Success)
+| render barchart 
+
+
+### Debug /Log
+
+AppTraces
+| where OperationId == '111'
+
+### Summarize by custom colum
+
+AppTraces
+| extend prop__numberEntered_ = tostring(Properties.prop__numberEntered)
+| where prop__numberEntered_ != ''
+| summarize count() by prop__numberEntered_
+| render piechart 
+
+
+```
