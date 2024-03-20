@@ -9,6 +9,8 @@ parameters:
 stages:
   - stage: ${{ parameters.env }}Release
     displayName: 'Stage: ${{ parameters.env }}'
+    environment: 
+      name: ${{ parameters.env }}
     jobs: 
       - job: jobdeploy1
         displayName: 'Job: ${{ parameters.env }}'
