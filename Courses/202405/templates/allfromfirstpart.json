@@ -1,0 +1,2807 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sites_az204mlc01_name": {
+            "defaultValue": "az204mlc01",
+            "type": "String"
+        },
+        "workflows_fdfdfd_name": {
+            "defaultValue": "fdfdfd",
+            "type": "String"
+        },
+        "serverfarms_az204mlcplan_name": {
+            "defaultValue": "az204mlcplan",
+            "type": "String"
+        },
+        "virtualMachines_az204_name": {
+            "defaultValue": "az204",
+            "type": "String"
+        },
+        "components_az204mlc01_name": {
+            "defaultValue": "az204mlc01",
+            "type": "String"
+        },
+        "workflows_mytestworkflow_name": {
+            "defaultValue": "mytestworkflow",
+            "type": "String"
+        },
+        "namespaces_az204mlc01_name": {
+            "defaultValue": "az204mlc01",
+            "type": "String"
+        },
+        "networkInterfaces_az204822_name": {
+            "defaultValue": "az204822",
+            "type": "String"
+        },
+        "publicIPAddresses_az204_ip_name": {
+            "defaultValue": "az204-ip",
+            "type": "String"
+        },
+        "virtualNetworks_az204_vnet_name": {
+            "defaultValue": "az204-vnet",
+            "type": "String"
+        },
+        "storageAccounts_az204mlc01st_name": {
+            "defaultValue": "az204mlc01st",
+            "type": "String"
+        },
+        "networkSecurityGroups_az204_nsg_name": {
+            "defaultValue": "az204-nsg",
+            "type": "String"
+        },
+        "privateEndpoints_privateendpointmlc_name": {
+            "defaultValue": "privateendpointmlc",
+            "type": "String"
+        },
+        "storageAccounts_az204mlclocalfuncapp_name": {
+            "defaultValue": "az204mlclocalfuncapp",
+            "type": "String"
+        },
+        "privateDnsZones_privatelink_blob_core_windows_net_name": {
+            "defaultValue": "privatelink.blob.core.windows.net",
+            "type": "String"
+        },
+        "smartdetectoralertrules_failure_anomalies___az204mlc01_name": {
+            "defaultValue": "failure anomalies - az204mlc01",
+            "type": "String"
+        },
+        "actiongroups_application_insights_smart_detection_externalid": {
+            "defaultValue": "/subscriptions/9bc198aa-089c-4698-a7ef-8af058b48d90/resourceGroups/functionappdkdemo01-rg/providers/microsoft.insights/actiongroups/application insights smart detection",
+            "type": "String"
+        },
+        "workspaces_DefaultWorkspace_9bc198aa_089c_4698_a7ef_8af058b48d90_DEWC_externalid": {
+            "defaultValue": "/subscriptions/9bc198aa-089c-4698-a7ef-8af058b48d90/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-9bc198aa-089c-4698-a7ef-8af058b48d90-DEWC",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2020-02-02",
+            "name": "[parameters('components_az204mlc01_name')]",
+            "location": "germanywestcentral",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Redfield",
+                "Request_Source": "IbizaWebAppExtensionCreate",
+                "RetentionInDays": 90,
+                "WorkspaceResourceId": "[parameters('workspaces_DefaultWorkspace_9bc198aa_089c_4698_a7ef_8af058b48d90_DEWC_externalid')]",
+                "IngestionMode": "LogAnalytics",
+                "publicNetworkAccessForIngestion": "Enabled",
+                "publicNetworkAccessForQuery": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_fdfdfd_name')]",
+            "location": "eastus",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET",
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Response": {
+                            "runAfter": {},
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": "Helllo",
+                                "statusCode": 200
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-09-01",
+            "name": "[parameters('networkSecurityGroups_az204_nsg_name')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "RDP",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_az204_nsg_name'), 'RDP')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 300,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "[parameters('privateDnsZones_privatelink_blob_core_windows_net_name')]",
+            "location": "global",
+            "properties": {
+                "maxNumberOfRecordSets": 25000,
+                "maxNumberOfVirtualNetworkLinks": 1000,
+                "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
+                "numberOfRecordSets": 2,
+                "numberOfVirtualNetworkLinks": 1,
+                "numberOfVirtualNetworkLinksWithRegistration": 0,
+                "provisioningState": "Succeeded"
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2023-09-01",
+            "name": "[parameters('publicIPAddresses_az204_ip_name')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "ipAddress": "4.185.108.187",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2023-09-01",
+            "name": "[parameters('virtualNetworks_az204_vnet_name')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.1.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "default",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'default')]",
+                        "properties": {
+                            "addressPrefix": "10.1.0.0/24",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "name": "storage",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'storage')]",
+                        "properties": {
+                            "addressPrefix": "10.1.1.0/24",
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "name": "webapp",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'webapp')]",
+                        "properties": {
+                            "addressPrefix": "10.1.2.0/24",
+                            "serviceEndpoints": [],
+                            "delegations": [
+                                {
+                                    "name": "Microsoft.Web.serverFarms",
+                                    "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'webapp'), '/delegations/Microsoft.Web.serverFarms')]",
+                                    "properties": {
+                                        "serviceName": "Microsoft.Web/serverFarms"
+                                    },
+                                    "type": "Microsoft.Network/virtualNetworks/subnets/delegations"
+                                }
+                            ],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[parameters('namespaces_az204mlc01_name')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard"
+            },
+            "properties": {
+                "premiumMessagingPartitions": 0,
+                "minimumTlsVersion": "1.2",
+                "publicNetworkAccess": "Enabled",
+                "disableLocalAuth": false,
+                "privateEndpointConnections": [],
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('storageAccounts_az204mlc01st_name')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Disabled",
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": true,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "resourceAccessRules": [],
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [
+                        {
+                            "value": "217.63.103.198",
+                            "action": "Allow"
+                        }
+                    ],
+                    "defaultAction": "Deny"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('storageAccounts_az204mlclocalfuncapp_name')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('serverfarms_az204mlcplan_name')]",
+            "location": "Germany West Central",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "properties": {
+                "perSiteScaling": false,
+                "elasticScaleEnabled": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0,
+                "zoneRedundant": false
+            }
+        },
+        {
+            "type": "microsoft.alertsmanagement/smartdetectoralertrules",
+            "apiVersion": "2021-04-01",
+            "name": "[parameters('smartdetectoralertrules_failure_anomalies___az204mlc01_name')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "description": "Failure Anomalies notifies you of an unusual rise in the rate of failed HTTP requests or dependency calls.",
+                "state": "Enabled",
+                "severity": "Sev3",
+                "frequency": "PT1M",
+                "detector": {
+                    "id": "FailureAnomaliesDetector"
+                },
+                "scope": [
+                    "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+                ],
+                "actionGroups": {
+                    "groupIds": [
+                        "[parameters('actiongroups_application_insights_smart_detection_externalid')]"
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2023-03-01",
+            "name": "[parameters('virtualMachines_az204_name')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_az204822_name'))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D4s_v3"
+                },
+                "additionalCapabilities": {
+                    "hibernationEnabled": false
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-g2",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        "name": "[concat(parameters('virtualMachines_az204_name'), '_OsDisk_1_682d4c1b5fb145f58d800784be86b3e4')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS",
+                            "id": "[resourceId('Microsoft.Compute/disks', concat(parameters('virtualMachines_az204_name'), '_OsDisk_1_682d4c1b5fb145f58d800784be86b3e4'))]"
+                        },
+                        "deleteOption": "Delete",
+                        "diskSizeGB": 127
+                    },
+                    "dataDisks": [],
+                    "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_az204_name')]",
+                    "adminUsername": "azuser",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByOS",
+                            "assessmentMode": "ImageDefault",
+                            "enableHotpatching": false
+                        },
+                        "enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_az204822_name'))]",
+                            "properties": {
+                                "deleteOption": "Detach"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/degradationindependencyduration')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationindependencyduration",
+                    "DisplayName": "Degradation in dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/degradationinserverresponsetime')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "degradationinserverresponsetime",
+                    "DisplayName": "Degradation in server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/digestMailConfiguration')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "digestMailConfiguration",
+                    "DisplayName": "Digest Mail Configuration",
+                    "Description": "This rule describes the digest mail preferences",
+                    "HelpUrl": "www.homail.com",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_billingdatavolumedailyspikeextension')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_billingdatavolumedailyspikeextension",
+                    "DisplayName": "Abnormal rise in daily data volume (preview)",
+                    "Description": "This detection rule automatically analyzes the billing data generated by your application, and can warn you about an unusual increase in your application's billing costs",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/billing-data-volume-daily-spike.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_canaryextension')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_canaryextension",
+                    "DisplayName": "Canary extension",
+                    "Description": "Canary extension",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_exceptionchangeextension')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_exceptionchangeextension",
+                    "DisplayName": "Abnormal rise in exception volume (preview)",
+                    "Description": "This detection rule automatically analyzes the exceptions thrown in your application, and can warn you about unusual patterns in your exception telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/abnormal-rise-in-exception-volume.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_memoryleakextension')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_memoryleakextension",
+                    "DisplayName": "Potential memory leak detected (preview)",
+                    "Description": "This detection rule automatically analyzes the memory consumption of each process in your application, and can warn you about potential memory leaks or increased memory consumption.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/tree/master/SmartDetection/memory-leak.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_securityextensionspackage')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_securityextensionspackage",
+                    "DisplayName": "Potential security issue detected (preview)",
+                    "Description": "This detection rule automatically analyzes the telemetry generated by your application and detects potential security issues.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/application-security-detection-pack.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/extension_traceseveritydetector')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "extension_traceseveritydetector",
+                    "DisplayName": "Degradation in trace severity ratio (preview)",
+                    "Description": "This detection rule automatically analyzes the trace logs emitted from your application, and can warn you about unusual patterns in the severity of your trace telemetry.",
+                    "HelpUrl": "https://github.com/Microsoft/ApplicationInsights-Home/blob/master/SmartDetection/degradation-in-trace-severity-ratio.md",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/longdependencyduration')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "longdependencyduration",
+                    "DisplayName": "Long dependency duration",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/migrationToAlertRulesCompleted')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "migrationToAlertRulesCompleted",
+                    "DisplayName": "Migration To Alert Rules Completed",
+                    "Description": "A configuration that controls the migration state of Smart Detection to Smart Alerts",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": true,
+                    "IsEnabledByDefault": false,
+                    "IsInPreview": true,
+                    "SupportsEmailNotifications": false
+                },
+                "enabled": false,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/slowpageloadtime')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowpageloadtime",
+                    "DisplayName": "Slow page load time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "microsoft.insights/components/ProactiveDetectionConfigs",
+            "apiVersion": "2018-05-01-preview",
+            "name": "[concat(parameters('components_az204mlc01_name'), '/slowserverresponsetime')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('microsoft.insights/components', parameters('components_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "ruleDefinitions": {
+                    "Name": "slowserverresponsetime",
+                    "DisplayName": "Slow server response time",
+                    "Description": "Smart Detection rules notify you of performance anomaly issues.",
+                    "HelpUrl": "https://docs.microsoft.com/en-us/azure/application-insights/app-insights-proactive-performance-diagnostics",
+                    "IsHidden": false,
+                    "IsEnabledByDefault": true,
+                    "IsInPreview": false,
+                    "SupportsEmailNotifications": true
+                },
+                "enabled": true,
+                "sendEmailsToSubscriptionOwners": true,
+                "customEmails": []
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_mytestworkflow_name')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/StorageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "triggers": {
+                        "manual": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET",
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "actions": {
+                        "HTTP": {
+                            "runAfter": {},
+                            "type": "Http",
+                            "inputs": {
+                                "authentication": {
+                                    "audience": "https://storage.azure.com/",
+                                    "type": "ManagedServiceIdentity"
+                                },
+                                "headers": {
+                                    "x-ms-version": "2023-08-03"
+                                },
+                                "method": "GET",
+                                "uri": "[concat('https://', parameters('storageAccounts_az204mlc01st_name'), '.blob.core.windows.net/mysecondcontainer/test.txt')]"
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "HTTP": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "body": "@body('HTTP')",
+                                "statusCode": 200
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {}
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(parameters('networkSecurityGroups_az204_nsg_name'), '/RDP')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_az204_nsg_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 300,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/A",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(parameters('privateDnsZones_privatelink_blob_core_windows_net_name'), '/az204mlc01st')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_blob_core_windows_net_name'))]"
+            ],
+            "properties": {
+                "metadata": {
+                    "creator": "created by private endpoint privateendpointmlc with resource guid 69039525-719d-4bd4-93cf-e3de4c0004b1"
+                },
+                "ttl": 10,
+                "aRecords": [
+                    {
+                        "ipv4Address": "10.1.1.4"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/SOA",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(parameters('privateDnsZones_privatelink_blob_core_windows_net_name'), '/@')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_blob_core_windows_net_name'))]"
+            ],
+            "properties": {
+                "ttl": 3600,
+                "soaRecord": {
+                    "email": "azureprivatedns-host.microsoft.com",
+                    "expireTime": 2419200,
+                    "host": "azureprivatedns.net",
+                    "minimumTtl": 10,
+                    "refreshTime": 3600,
+                    "retryTime": 300,
+                    "serialNumber": 1
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(parameters('virtualNetworks_az204_vnet_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az204_vnet_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.0.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(parameters('virtualNetworks_az204_vnet_name'), '/storage')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az204_vnet_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.1.0/24",
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(parameters('virtualNetworks_az204_vnet_name'), '/webapp')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az204_vnet_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.1.2.0/24",
+                "serviceEndpoints": [],
+                "delegations": [
+                    {
+                        "name": "Microsoft.Web.serverFarms",
+                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'webapp'), '/delegations/Microsoft.Web.serverFarms')]",
+                        "properties": {
+                            "serviceName": "Microsoft.Web/serverFarms"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets/delegations"
+                    }
+                ],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/authorizationrules",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/RootManageSharedAccessKey')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/networkrulesets",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/default')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "defaultAction": "Allow",
+                "virtualNetworkRules": [],
+                "ipRules": [],
+                "trustedServiceAccessEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/queues",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/myqueue')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "maxMessageSizeInKilobytes": 256,
+                "lockDuration": "PT30S",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": true,
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P30D",
+                "deadLetteringOnMessageExpiration": false,
+                "enableBatchedOperations": true,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "maxMessageSizeInKilobytes": 256,
+                "defaultMessageTimeToLive": "P14D",
+                "maxSizeInMegabytes": 1024,
+                "requiresDuplicateDetection": false,
+                "duplicateDetectionHistoryTimeWindow": "PT10M",
+                "enableBatchedOperations": true,
+                "status": "Active",
+                "supportOrdering": false,
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+                "enablePartitioning": false,
+                "enableExpress": false
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": true,
+                    "days": 7
+                },
+                "containerDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlclocalfuncapp_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlclocalfuncapp_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": true,
+                    "days": 7
+                },
+                "containerDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_RAGRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlclocalfuncapp_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlclocalfuncapp_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/privateEndpointConnections",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/', parameters('storageAccounts_az204mlc01st_name'), '.bc88b846-f4c2-432e-b3c8-26b5ea55c6e1')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "provisioningState": "Succeeded",
+                "privateEndpoint": {},
+                "privateLinkServiceConnectionState": {
+                    "status": "Approved",
+                    "description": "Auto-Approved",
+                    "actionRequired": "None"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlclocalfuncapp_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlclocalfuncapp_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlclocalfuncapp_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlclocalfuncapp_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2023-01-01",
+            "name": "[parameters('sites_az204mlc01_name')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_az204mlcplan_name'))]"
+            ],
+            "kind": "app",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "[concat(parameters('sites_az204mlc01_name'), '.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "[concat(parameters('sites_az204mlc01_name'), '.scm.azurewebsites.net')]",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_az204mlcplan_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": true,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "128E688E6399861BEB0F5E620F068C6D6B0CBF293A91627B3D1F2D83B3BE3DA6",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": true,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/ftp')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "allow": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/scm')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "allow": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/web')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v8.0",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "remoteDebuggingVersion": "VS2019",
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$az204mlc01",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": true,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": true
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": [
+                        {
+                            "actionHostName": "az204mlc01-stage.azurewebsites.net",
+                            "reroutePercentage": 40,
+                            "name": "stage"
+                        }
+                    ]
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/87e109e9faa449c59c00806cceabd866')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "OneDeploy",
+                "message": "OneDeploy",
+                "start_time": "2024-04-29T13:42:25.7786523Z",
+                "end_time": "2024-04-29T13:42:30.0600008Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/a16b9ba0dd5648cdb588261bb7b2025b')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "OneDeploy",
+                "message": "OneDeploy",
+                "start_time": "2024-04-29T13:43:59.0429606Z",
+                "end_time": "2024-04-29T13:44:04.6157591Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/', parameters('sites_az204mlc01_name'), '.azurewebsites.net')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "siteName": "az204mlc01",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T13_09_55_3978420')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T14_09_55_4277345')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T15_09_55_4695959')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T16_09_56_4313270')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T17_09_55_5996319')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T18_09_55_5940489')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T19_09_55_6335299')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T20_09_55_6765947')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T21_09_55_7332435')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T22_09_55_7594890')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-29T23_09_55_7990681')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T00_09_55_8280187')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T01_09_55_9111890')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T02_09_55_9102486')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T03_09_55_9560947')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T04_09_55_9868136')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T05_09_56_9249316')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T06_09_56_0838074')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T07_09_56_1266162')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T08_09_56_1620122')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T09_09_56_2235776')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T10_09_56_2804363')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T11_09_56_3025690')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T12_09_56_3521535')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T13_09_56_4206080')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T14_09_56_4316602')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T15_09_56_4805549')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T16_09_56_5265867')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T17_09_56_6072560')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T18_09_56_6084712')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T19_09_56_6601173')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T20_09_56_7247553')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T21_09_56_7420307')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T22_09_56_7718258')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-04-30T23_09_56_8227410')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T00_09_56_8531030')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T01_09_56_9111889')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T02_09_56_9486855')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T03_09_57_0110584')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T04_09_57_0501774')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T05_09_57_1033642')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T06_09_57_1404626')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T07_09_57_1648467')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T08_09_57_2125347')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T09_09_57_2724930')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T10_09_57_3026103')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T11_09_57_3470612')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/2024-05-01T12_09_57_3956602')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[concat(parameters('privateDnsZones_privatelink_blob_core_windows_net_name'), '/abj64gsh3hcyg')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_blob_core_windows_net_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az204_vnet_name'))]"
+            ],
+            "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_az204_vnet_name'))]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateEndpoints",
+            "apiVersion": "2023-09-01",
+            "name": "[parameters('privateEndpoints_privateendpointmlc_name')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'storage')]"
+            ],
+            "properties": {
+                "privateLinkServiceConnections": [
+                    {
+                        "name": "[parameters('privateEndpoints_privateendpointmlc_name')]",
+                        "id": "[concat(resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoints_privateendpointmlc_name')), concat('/privateLinkServiceConnections/', parameters('privateEndpoints_privateendpointmlc_name')))]",
+                        "properties": {
+                            "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]",
+                            "groupIds": [
+                                "blob"
+                            ],
+                            "privateLinkServiceConnectionState": {
+                                "status": "Approved",
+                                "description": "Auto-Approved",
+                                "actionsRequired": "None"
+                            }
+                        }
+                    }
+                ],
+                "manualPrivateLinkServiceConnections": [],
+                "customNetworkInterfaceName": "[concat(parameters('privateEndpoints_privateendpointmlc_name'), '-nic')]",
+                "subnet": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'storage')]"
+                },
+                "ipConfigurations": [],
+                "customDnsConfigs": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(parameters('privateEndpoints_privateendpointmlc_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('privateEndpoints_privateendpointmlc_name'))]",
+                "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_blob_core_windows_net_name'))]"
+            ],
+            "properties": {
+                "privateDnsZoneConfigs": [
+                    {
+                        "name": "privatelink-blob-core-windows-net",
+                        "properties": {
+                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZones_privatelink_blob_core_windows_net_name'))]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/denmarkonly')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "isClientAffine": false,
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": false,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P14D"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/getall')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "isClientAffine": false,
+                "lockDuration": "PT15S",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": false,
+                "maxDeliveryCount": 3,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P14D"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/swedenonly')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "isClientAffine": false,
+                "lockDuration": "PT1M",
+                "requiresSession": false,
+                "defaultMessageTimeToLive": "P14D",
+                "deadLetteringOnMessageExpiration": false,
+                "deadLetteringOnFilterEvaluationExceptions": false,
+                "maxDeliveryCount": 10,
+                "status": "Active",
+                "enableBatchedOperations": true,
+                "autoDeleteOnIdle": "P14D"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlclocalfuncapp_name'), '/default/azure-webjobs-hosts')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_az204mlclocalfuncapp_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlclocalfuncapp_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/myfirstcontainer')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "Blob"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/mysecondcontainer')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/afterprocessing')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/finalprocessing')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/myqueue')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/myqueue-poison')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('storageAccounts_az204mlc01st_name'), '/default/orderqueue')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/queueServices', parameters('storageAccounts_az204mlc01st_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_az204mlc01st_name'))]"
+            ],
+            "properties": {
+                "metadata": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]",
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_az204mlcplan_name'))]"
+            ],
+            "kind": "app",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "az204mlc01-stage.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "az204mlc01-stage.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_az204mlcplan_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "vnetRouteAllEnabled": false,
+                "vnetImagePullEnabled": false,
+                "vnetContentShareEnabled": false,
+                "siteConfig": {
+                    "numberOfWorkers": 1,
+                    "acrUseManagedIdentityCreds": false,
+                    "alwaysOn": false,
+                    "http20Enabled": false,
+                    "functionAppScaleLimit": 0,
+                    "minimumElasticInstanceCount": 0
+                },
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "clientCertMode": "Required",
+                "hostNamesDisabled": false,
+                "customDomainVerificationId": "128E688E6399861BEB0F5E620F068C6D6B0CBF293A91627B3D1F2D83B3BE3DA6",
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None",
+                "publicNetworkAccess": "Enabled",
+                "storageAccountRequired": false,
+                "keyVaultReferenceIdentity": "SystemAssigned"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/ftp')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/scm')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "allow": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/config",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/web')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "httpLoggingEnabled": false,
+                "acrUseManagedIdentityCreds": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$az204mlc01__stage",
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "vnetRouteAllEnabled": false,
+                "vnetPrivatePortsCount": 0,
+                "publicNetworkAccess": "Enabled",
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 2147483647,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "scmMinTlsVersion": "1.2",
+                "ftpsState": "FtpsOnly",
+                "preWarmedInstanceCount": 0,
+                "elasticWebAppScaleLimit": 0,
+                "functionsRuntimeScaleMonitoringEnabled": false,
+                "minimumElasticInstanceCount": 0,
+                "azureStorageAccounts": {}
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/deployments",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/b6238f69f0eb47c8a18f57dfee604e14')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "OneDeploy",
+                "message": "OneDeploy",
+                "start_time": "2024-04-29T13:48:02.1124788Z",
+                "end_time": "2024-04-29T13:48:06.1825584Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/hostNameBindings",
+            "apiVersion": "2023-01-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/', parameters('sites_az204mlc01_name'), '-stage.azurewebsites.net')]",
+            "location": "Germany West Central",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "siteName": "az204mlc01(stage)",
+                "hostNameType": "Verified"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T14_09_55_4277345')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T15_09_55_4695959')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T16_09_56_4313270')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T17_09_55_5996319')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T18_09_55_5940489')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T19_09_55_6335299')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T20_09_55_6765947')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T21_09_55_7332435')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T22_09_55_7594890')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-29T23_09_55_7990681')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T00_09_55_8280187')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T01_09_55_9111890')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T02_09_55_9102486')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T03_09_55_9560947')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T04_09_55_9868136')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T05_09_56_9249316')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T06_09_56_0838074')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T07_09_56_1266162')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T08_09_56_1620122')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T09_09_56_2235776')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T10_09_56_2804363')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T11_09_56_3025690')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T12_09_56_3521535')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T13_09_56_4206080')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T14_09_56_4316602')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T15_09_56_4805549')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T16_09_56_5265867')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T17_09_56_6072560')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T18_09_56_6084712')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T19_09_56_6601173')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T20_09_56_7247553')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T21_09_56_7420307')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T22_09_56_7718258')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-04-30T23_09_56_8227410')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T00_09_56_8531030')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T01_09_56_9111889')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T02_09_56_9486855')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T03_09_57_0110584')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T04_09_57_0501774')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T05_09_57_1033642')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T06_09_57_1404626')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T07_09_57_1648467')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T08_09_57_2125347')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T09_09_57_2724930')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T10_09_57_3026103')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T11_09_57_3470612')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Web/sites/slots/snapshots",
+            "apiVersion": "2015-08-01",
+            "name": "[concat(parameters('sites_az204mlc01_name'), '/stage/2024-05-01T12_09_57_3956602')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites/slots', parameters('sites_az204mlc01_name'), 'stage')]",
+                "[resourceId('Microsoft.Web/sites', parameters('sites_az204mlc01_name'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2023-09-01",
+            "name": "[parameters('networkInterfaces_az204822_name')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_az204_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'default')]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_az204_nsg_name'))]"
+            ],
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_az204822_name')), '/ipConfigurations/ipconfig1')]",
+                        "etag": "W/\"d4299543-75d0-4d9d-9094-d2285b5085ac\"",
+                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.1.0.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_az204_ip_name'))]",
+                                "properties": {
+                                    "deleteOption": "Detach"
+                                }
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_az204_vnet_name'), 'default')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": true,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_az204_nsg_name'))]"
+                },
+                "nicType": "Standard",
+                "auxiliaryMode": "None",
+                "auxiliarySku": "None"
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/getall/$Default')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_az204mlc01_name'), 'mytopic', 'getall')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "1=1",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/denmarkonly/denmark')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_az204mlc01_name'), 'mytopic', 'denmarkonly')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "((andersand = 'DK'))",
+                    "compatibilityLevel": 20
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+            "apiVersion": "2022-10-01-preview",
+            "name": "[concat(parameters('namespaces_az204mlc01_name'), '/mytopic/swedenonly/sweden')]",
+            "location": "germanywestcentral",
+            "dependsOn": [
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaces_az204mlc01_name'), 'mytopic', 'swedenonly')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaces_az204mlc01_name'), 'mytopic')]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', parameters('namespaces_az204mlc01_name'))]"
+            ],
+            "properties": {
+                "action": {},
+                "filterType": "SqlFilter",
+                "sqlFilter": {
+                    "sqlExpression": "((andersand = 'SE'))",
+                    "compatibilityLevel": 20
+                }
+            }
+        }
+    ]
+}
