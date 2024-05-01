@@ -58,7 +58,7 @@ Function App = web app
 ---------------------
 
 
-https://az204mlcfunc.azurewebsites.net/api/MyFirstHttpTrigger?code=AaIXhZzXV67PZZEyCivuQQgFzICVV-3sjj2BXpZPw6N_AzFuhWO-_g==
+
 
 
 
@@ -116,4 +116,3 @@ Storage Account from yesterday
     -> The message disappears
     -> 
 
-    
