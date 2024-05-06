@@ -1,3 +1,15 @@
+### Install and login CLI
+
+```powershell
+
+winget install Microsoft.AzureCLI
+
+winget install Git.Git
+
+az login --use-device-code
+
+```
+
 ### Create resource group and apply arm template
 
 ```powershell
