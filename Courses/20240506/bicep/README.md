@@ -8,6 +8,7 @@ winget install Git.Git
 
 az login --use-device-code
 
+
 ```
 
 ### Create resource group and apply arm template
@@ -20,6 +21,7 @@ az login --use-device-code
 
 $rgName  = "invixo-init-armdemo-01-rg"
 $env = "Test"
+az group create --name $rgName --location westgermanycentral
 az deployment group create --resource-group $rgName --template-file .\Templates\azurestorageaccount.bicep --parameters .\Parameters\$env\storageaccount.json
 
 ```
