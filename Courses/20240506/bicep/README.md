@@ -21,7 +21,7 @@ az login --use-device-code
 
 $rgName  = "invixo-init-armdemo-01-rg"
 $env = "Test"
-az group create --name $rgName --location westgermanycentral
+az group create --name $rgName --location germanywestcentral
 az deployment group create --resource-group $rgName --template-file .\Templates\azurestorageaccount.bicep --parameters .\Parameters\$env\storageaccount.json
 
 ```
