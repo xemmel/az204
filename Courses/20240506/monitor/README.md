@@ -43,3 +43,9 @@ AppTraces
 //| order by TimeGenerated asc
 | summarize count() by prop__number_
 | render piechart 
+
+
+AppRequests
+| where Name == 'Calculator'
+| summarize count() by bin(TimeGenerated,3m), tostring(Success)
+| render barchart 
