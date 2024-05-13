@@ -10,7 +10,9 @@ az group create --name $rgName --location germanywestcentral
 az deployment group create --resource-group $rgName --template-file .\storeaccount.bicep
 ## You will be prompted for storage account name (small letters only)
 
+## Deploy with parameter files
 
+az deployment group create --resource-group $rgName --template-file .\storeaccount.bicep --parameters ..\parameters\$env\storageaccount.json
 
 ```
 
