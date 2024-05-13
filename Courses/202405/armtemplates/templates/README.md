@@ -14,5 +14,12 @@ az deployment group create --resource-group $rgName --template-file .\storeaccou
 
 az deployment group create --resource-group $rgName --template-file .\storeaccount.bicep --parameters ..\parameters\$env\storageaccount.json
 
+
+### Deploy all monitoring
+
+C:\code\az204\Courses\202405\armtemplates\templates> az deployment group create --resource-group $rgName --template-file .\monitor.bicep --parameters appName=az204mlc05 --parameters env=test
+
+
+
 ```
 
